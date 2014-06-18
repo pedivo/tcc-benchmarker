@@ -6,7 +6,7 @@ public class OneMillionInsertsTaskTest {
 
 	@Test
 	public void printEntity() {
-		OneMillionInsertsTask task = new OneMillionInsertsTask();
+		Command task = new OneMillionInsertsTask();
 		task.execute();
 	}
 }

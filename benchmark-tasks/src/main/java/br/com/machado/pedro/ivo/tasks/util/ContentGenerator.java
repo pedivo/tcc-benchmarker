@@ -2,8 +2,11 @@ package br.com.machado.pedro.ivo.tasks.util;
 
 import java.util.Date;
 import java.util.Random;
+import br.com.machado.pedro.ivo.entity.beans.generic.Country;
 
 public class ContentGenerator {
+
+	private static final Country[]	countries	= Country.values();
 
 	/**
 	 * Create a new fake Date
@@ -33,5 +36,18 @@ public class ContentGenerator {
 			buffer.append(characters.charAt((int) index));
 		}
 		return buffer.toString();
+	}
+
+	/**
+	 * Create a new fake Country
+	 * 
+	 * @return String.class
+	 */
+	public static Country createCountry(Long index) {
+		if (index >= countries.length) {
+			Long nIndex = index / countries.length;
+			return createCountry(nIndex);
+		}
+		return countries[index.intValue()];
 	}
 }

@@ -1,14 +1,14 @@
 package br.com.machado.pedro.ivo.entity.mock;
 
 import java.util.Date;
+import br.com.machado.pedro.ivo.entity.beans.generic.Country;
 import br.com.machado.pedro.ivo.entity.generic.SimpleEntity;
-
 
 public class SimpleEntityMock extends SimpleEntity {
 
 	@Override
 	public void setId(Long id) {
-		super.id = id;		
+		super.id = id;
 	}
 
 	@Override
@@ -65,7 +65,21 @@ public class SimpleEntityMock extends SimpleEntity {
 	public String getEmail() {
 		return super.email;
 	}
-	
-	
+
+	public Country getIndexedCountry() {
+		return indexedCountry;
+	}
+
+	public void setIndexedCountry(Country indexedCountry) {
+		this.indexedCountry = indexedCountry;
+	}
+
+	public Country getNotIndexedCountry() {
+		return notIndexedCountry;
+	}
+
+	public void setNotIndexedCountry(Country notIndexedCountry) {
+		this.notIndexedCountry = notIndexedCountry;
+	}
 
 }

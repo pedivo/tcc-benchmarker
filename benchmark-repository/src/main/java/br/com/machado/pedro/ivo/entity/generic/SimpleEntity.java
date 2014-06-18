@@ -1,6 +1,7 @@
 package br.com.machado.pedro.ivo.entity.generic;
 
 import java.util.Date;
+import br.com.machado.pedro.ivo.entity.beans.generic.Country;
 
 public abstract class SimpleEntity {
 
@@ -10,6 +11,8 @@ public abstract class SimpleEntity {
 	protected Date		birthday;
 	protected String	city;
 	protected String	email;
+	protected Country	indexedCountry;
+	protected Country	notIndexedCountry;
 
 	public abstract void setId(Long id);
 
@@ -35,10 +38,18 @@ public abstract class SimpleEntity {
 
 	public abstract String getEmail();
 
+	public abstract Country getIndexedCountry();
+
+	public abstract void setIndexedCountry(Country indexedCountry);
+
+	public abstract Country getNotIndexedCountry();
+
+	public abstract void setNotIndexedCountry(Country notIndexedCountry);
+
 	@Override
 	public String toString() {
 		return "SimpleEntity [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", birthday=" + birthday + ", city=" + city + ", email=" + email
-				+ "]";
+				+ ", indexedCountry=" + indexedCountry + ", notIndexedCountry=" + notIndexedCountry + "]";
 	}
 
 }

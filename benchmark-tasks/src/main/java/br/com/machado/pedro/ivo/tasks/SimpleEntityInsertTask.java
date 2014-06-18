@@ -30,6 +30,8 @@ public class SimpleEntityInsertTask implements Command {
 		entity.setLastname(ContentGenerator.createString(30));
 		entity.setCity(ContentGenerator.createString(10));
 		entity.setEmail(ContentGenerator.createString(50));
+		entity.setIndexedCountry(ContentGenerator.createCountry(entity.getId()));
+		entity.setNotIndexedCountry(ContentGenerator.createCountry(entity.getId()));
 	}
 
 	@Override

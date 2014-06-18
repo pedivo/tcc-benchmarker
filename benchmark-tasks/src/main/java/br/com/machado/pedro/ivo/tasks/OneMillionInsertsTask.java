@@ -33,10 +33,8 @@ public class OneMillionInsertsTask implements Command {
 		}
 		
 		while (threadPool.getCompletedTaskCount() < TOTAL_OF_ROWS) {
-			System.out.println(threadPool);
-			System.out.println(threadPool.getCompletedTaskCount());
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(20000);
 			}
 			catch (InterruptedException e) {
 				// TODO Auto-generated catch block
