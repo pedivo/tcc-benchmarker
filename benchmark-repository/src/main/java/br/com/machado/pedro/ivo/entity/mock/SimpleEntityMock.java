@@ -6,6 +6,14 @@ import br.com.machado.pedro.ivo.entity.generic.SimpleEntity;
 
 public class SimpleEntityMock extends SimpleEntity {
 
+	public SimpleEntityMock() {
+
+	}
+
+	public SimpleEntityMock(Long id) {
+		super.id = id;
+	}
+
 	@Override
 	public void setId(Long id) {
 		super.id = id;

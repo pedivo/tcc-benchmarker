@@ -14,17 +14,15 @@ import br.com.machado.pedro.ivo.tasks.util.ContentGenerator;
  * @author Pedro
  * 
  */
-public class SimpleEntityInsertTask implements Command {
+public class SimpleEntityUpdateTask implements Command {
 
 	private SimpleEntity								entity;
-	private static long									COUNTER		= 0;
-	private static final String					TASK_ID		= "SIMPLE_ENTITY_INSERT";
-	private static final OperationType	operation	= OperationType.INSERT;
+	private static final String					TASK_ID		= "SIMPLE_ENTITY_UPDATE";
+	private static final OperationType	operation	= OperationType.UPDATE;
 
-	public SimpleEntityInsertTask() {
-		COUNTER++;
-		entity = EntityFactory.createSimpleEntity();
-		entity.setId(new Long(COUNTER));
+	public SimpleEntityUpdateTask(Long id) {
+		entity = DAOFactory.createSimpleDAO().findById(id);
+		entity.setId(id);
 		entity.setBirthday(ContentGenerator.createDate());
 		entity.setFirstname(ContentGenerator.createString(20));
 		entity.setLastname(ContentGenerator.createString(30));
@@ -37,10 +35,10 @@ public class SimpleEntityInsertTask implements Command {
 	@Override
 	public void execute() {
 		/**
-		 * Will create 1 SimpleEntities
+		 * Will update a SimpleEntity
 		 * 
 		 */
-		Long totalTime = DAOFactory.createSimpleDAO().save(entity);
+		Long totalTime = DAOFactory.createSimpleDAO().update(entity);
 		IndexStoreFactory.getIndexStore().store(totalTime, operation, DAOFactory.createSimpleDAO().getEngine(), TASK_ID, null);
 	}
 

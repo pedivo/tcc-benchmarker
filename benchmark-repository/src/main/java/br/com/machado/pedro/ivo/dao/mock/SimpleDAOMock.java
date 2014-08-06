@@ -7,9 +7,21 @@ import br.com.machado.pedro.ivo.entity.mock.SimpleEntityMock;
 public class SimpleDAOMock extends SimpleDAO<SimpleEntityMock> {
 
 	@Override
-	public long save(SimpleEntityMock entity) {
+	public Long save(SimpleEntityMock entity) {
 		try { Thread.sleep(70l); } catch (InterruptedException e) {}
 		return 70l;
+	}
+
+	@Override
+	public Long update(SimpleEntityMock entity) {
+		try { Thread.sleep(70l); } catch (InterruptedException e) {}
+		return 70l;
+	}
+
+	@Override
+	public Long deleteById(Long id) {
+		try { Thread.sleep(30l); } catch (InterruptedException e) {}
+		return 30l;
 	}
 
 	@Override
@@ -39,6 +51,23 @@ public class SimpleDAOMock extends SimpleDAO<SimpleEntityMock> {
 	public Long selectByNonIndexedCountry(Country country) {
 		try { Thread.sleep(2000l); } catch (InterruptedException e) {}
 		return 2000l;
+	}
+
+	@Override
+	public Long selectByIndexedCountry(Country country, int offset, int pagesize) {
+		try { Thread.sleep(200l); } catch (InterruptedException e) {}
+		return 200l;
+	}
+
+	@Override
+	public Long selectByNonIndexedCountry(Country country, int offset, int pagesize) {
+		try { Thread.sleep(400l); } catch (InterruptedException e) {}
+		return 400l;
+	}
+
+	@Override
+	public SimpleEntityMock findById(Long id) {
+		return new SimpleEntityMock(id);
 	}
 
 }

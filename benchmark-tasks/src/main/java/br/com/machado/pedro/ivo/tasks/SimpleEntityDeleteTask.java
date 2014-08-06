@@ -14,33 +14,24 @@ import br.com.machado.pedro.ivo.tasks.util.ContentGenerator;
  * @author Pedro
  * 
  */
-public class SimpleEntityInsertTask implements Command {
+public class SimpleEntityDeleteTask implements Command {
 
 	private SimpleEntity								entity;
-	private static long									COUNTER		= 0;
-	private static final String					TASK_ID		= "SIMPLE_ENTITY_INSERT";
-	private static final OperationType	operation	= OperationType.INSERT;
+	private static final String					TASK_ID		= "SIMPLE_ENTITY_DELETE";
+	private static final OperationType	operation	= OperationType.DELETE;
+	private Long id;
 
-	public SimpleEntityInsertTask() {
-		COUNTER++;
-		entity = EntityFactory.createSimpleEntity();
-		entity.setId(new Long(COUNTER));
-		entity.setBirthday(ContentGenerator.createDate());
-		entity.setFirstname(ContentGenerator.createString(20));
-		entity.setLastname(ContentGenerator.createString(30));
-		entity.setCity(ContentGenerator.createString(10));
-		entity.setEmail(ContentGenerator.createString(50));
-		entity.setIndexedCountry(ContentGenerator.createCountry(entity.getId()));
-		entity.setNotIndexedCountry(ContentGenerator.createCountry(entity.getId()));
+	public SimpleEntityDeleteTask(Long id) {
+		this.id = id;
 	}
 
 	@Override
 	public void execute() {
 		/**
-		 * Will create 1 SimpleEntities
+		 * Will update a SimpleEntity
 		 * 
 		 */
-		Long totalTime = DAOFactory.createSimpleDAO().save(entity);
+		Long totalTime = DAOFactory.createSimpleDAO().deleteById(this.id);
 		IndexStoreFactory.getIndexStore().store(totalTime, operation, DAOFactory.createSimpleDAO().getEngine(), TASK_ID, null);
 	}
 
