@@ -14,7 +14,7 @@ public class HundredKUpdatesTask implements Command {
 
 		// ThreadPoolInstance
 		private static ThreadPoolExecutor threadPool;
-		private static final long TOTAL_OF_ROWS = 1000000;
+		private static final long TOTAL_OF_ROWS = 100000;
 
 		public HundredKUpdatesTask() {
 				threadPool = new ThreadPoolExecutor(100, 100, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
@@ -23,17 +23,18 @@ public class HundredKUpdatesTask implements Command {
 		@Override
 		public void execute() {
 				/**
-				 * Will 100k SimpleEntities
+				 * Will update 100k SimpleEntities
 				 *
 				 */
+				int index = 0;
 				for (int i = 0; i < TOTAL_OF_ROWS; i++) {
-						threadPool.submit(new SimpleEntityUpdateTask(new Long(i)));
-						i = i + 9;
+						threadPool.submit(new SimpleEntityUpdateTask(new Long(index)));
+						index = index + 9;
 				}
 
 				while (threadPool.getCompletedTaskCount() < TOTAL_OF_ROWS) {
 						try {
-								Thread.sleep(20000);
+								Thread.sleep(2000);
 						}
 						catch (InterruptedException e) {
 								// TODO Auto-generated catch block

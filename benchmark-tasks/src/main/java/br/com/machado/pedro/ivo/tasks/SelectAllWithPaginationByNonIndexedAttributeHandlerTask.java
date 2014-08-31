@@ -1,6 +1,5 @@
 package br.com.machado.pedro.ivo.tasks;
 
-import br.com.machado.pedro.ivo.beans.enums.OperationType;
 import br.com.machado.pedro.ivo.dao.factory.DAOFactory;
 import br.com.machado.pedro.ivo.dao.generic.SimpleDAO;
 import br.com.machado.pedro.ivo.entity.beans.generic.Country;
@@ -15,11 +14,12 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Pedro
  */
-public class SelectByCountryWithPaginationByIndexedAttributeHandlerTask implements Command {
+public class SelectAllWithPaginationByNonIndexedAttributeHandlerTask implements Command {
+
 		private static ThreadPoolExecutor threadPool;
 
-		public SelectByCountryWithPaginationByIndexedAttributeHandlerTask() {
-				threadPool = new ThreadPoolExecutor(100, 100, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+		public SelectAllWithPaginationByNonIndexedAttributeHandlerTask() {
+				threadPool = new ThreadPoolExecutor(20, 20, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
 		}
 
 		@Override
@@ -30,16 +30,16 @@ public class SelectByCountryWithPaginationByIndexedAttributeHandlerTask implemen
 				int total = 0;
 				SimpleDAO dao = DAOFactory.createSimpleDAO();
 				for (Country country : Country.values()) {
-						Long totalTime = dao.countByIndexedCountry(country);
+						Long totalTime = dao.countByNonIndexedCountry(country);
 						dao.getResult();
 
-						threadPool.submit(new SelectByCountryWithPaginationByIndexedAttributeTask((Long) dao.getResult(), country));
+						threadPool.submit(new SelectAllWithPaginationByNonIndexedAttributeTask((Long) dao.getResult(), country));
 						total++;
 				}
 
 				while (threadPool.getCompletedTaskCount() < total) {
 						try {
-								Thread.sleep(20000);
+								Thread.sleep(2000);
 						}
 						catch (InterruptedException e) {
 								// TODO Auto-generated catch block

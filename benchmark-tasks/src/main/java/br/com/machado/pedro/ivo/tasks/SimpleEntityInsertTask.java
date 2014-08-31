@@ -43,7 +43,6 @@ public class SimpleEntityInsertTask implements Command {
 		}
 
 		public boolean isEntityOk() {
-				System.out.println(entity.toString());
 				return (entity.getId() != null && entity.getBirthday() != null && entity.getCity() != null && entity.getEmail() != null && entity.getFirstname() != null
 						&& entity
 						.getLastname() != null);

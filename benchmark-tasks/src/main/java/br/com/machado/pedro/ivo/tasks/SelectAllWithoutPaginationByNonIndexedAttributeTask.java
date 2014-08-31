@@ -6,6 +6,9 @@ import br.com.machado.pedro.ivo.dao.generic.SimpleDAO;
 import br.com.machado.pedro.ivo.entity.beans.generic.Country;
 import br.com.machado.pedro.ivo.index.store.factory.IndexStoreFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * That task will just do a simple count query by a indexed field
  *
@@ -15,6 +18,11 @@ public class SelectAllWithoutPaginationByNonIndexedAttributeTask implements Comm
 
 		private static final String        TASK_ID   = "SELECT_ALL_WITHOUT_PAGINATION_BY_NON_INDEXED_ATTIRBUTE";
 		private static final OperationType operation = OperationType.SELECT;
+		private Country country;
+
+		public SelectAllWithoutPaginationByNonIndexedAttributeTask(Country country) {
+				this.country = country;
+		}
 
 		@Override
 		public void execute() {
@@ -22,11 +30,12 @@ public class SelectAllWithoutPaginationByNonIndexedAttributeTask implements Comm
 				 * Will query by any country
 				 */
 				SimpleDAO dao = DAOFactory.createSimpleDAO();
+				Long totalTime = dao.selectByNonIndexedCountry(country);
 
-				for (Country country : Country.values()) {
-						Long totalTime = dao.selectByNonIndexedCountry(country);
-						IndexStoreFactory.getIndexStore().store(totalTime, operation, dao.getEngine(), TASK_ID, null);
-				}
+				Map<String, Object> metadata = new HashMap<>();
+				metadata.put("country", this.country.toString());
+
+				IndexStoreFactory.getIndexStore().store(totalTime, operation, dao.getEngine(), TASK_ID, metadata);
 		}
 
 		@Override
