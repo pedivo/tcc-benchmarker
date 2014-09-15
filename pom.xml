@@ -30,6 +30,11 @@
     <modules>
         <module>benchmark-repository</module>
         <module>benchmark-tasks</module>
+        <module>benchmark-mysql</module>
+        <module>benchmark-mariadb</module>
+        <module>benchmark-mongo</module>
+        <module>benchmark-memcached</module>
+        <module>benchmark-redis</module>
     </modules>
 
     <build>
