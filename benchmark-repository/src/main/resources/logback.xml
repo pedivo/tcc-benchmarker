@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 minutes">
+
+    <property name="CONSOLE_LOGGER_LEVEL" value="TRACE"/>
+    <property name="PROJECT_LOGGER_LEVEL" value="TRACE"/>
+    <property name="LOG_PATH" value="/Users/pedivo/Dev/log/benchmarker"/>
+    <property name="LOGGER_LEVEL" value="DEBUG"/>
+
+    <!-- Console -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${CONSOLE_LOGGER_LEVEL}</level>
+        </filter>
+        <encoder>
+            <pattern>%date{dd/MMM/yyyy HH:mm:ss.SSS} %c %5p - %m %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Plain Text Rolling Appender -->
+    <appender name="server"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Append>true</Append>
+        <File>${LOG_PATH}.log</File>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>%date{dd/MMM/yyyy HH:mm:ss.SSS} %c %5p - %m %n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${LOG_PATH}.log.%d{yyyy-MM-dd}
+            </fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Plain Text Rolling Appender -->
+    <appender name="server-error"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Append>true</Append>
+        <File>${LOG_PATH}-error.log</File>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>%date{dd/MMM/yyyy HH:mm:ss.SSS} %c %5p - %m %n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${LOG_PATH}-error.log.%d{yyyy-MM-dd}
+            </fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="org.w3c.tidy" level="OFF"/>
+    <logger name="ch.qos" level="OFF"/>
+    <logger name="org.slf4j" level="OFF"/>
+
+    <logger name="br.com.machado.pedro.ivo" level="${PROJECT_LOGGER_LEVEL}">
+        <appender-ref ref="console"/>
+        <appender-ref ref="server"/>
+        <appender-ref ref="server-error"/>
+    </logger>
+
+    <logger name="com.meplis" level="${PROJECT_LOGGER_LEVEL}">
+        <appender-ref ref="console"/>
+        <appender-ref ref="server"/>
+        <appender-ref ref="server-error"/>
+    </logger>
+
+    <root level="${LOGGER_LEVEL}">
+        <appender-ref ref="server"/>
+        <appender-ref ref="server-error"/>
+    </root>
+</configuration>

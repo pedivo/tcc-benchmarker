@@ -1,9 +1,10 @@
 package br.com.machado.pedro.ivo.entity.generic;
 
+import java.io.Serializable;
 import java.util.Date;
 import br.com.machado.pedro.ivo.entity.beans.generic.Country;
 
-public abstract class SimpleEntity {
+public abstract class SimpleEntity implements Serializable {
 
 	protected Long		id;
 	protected String	firstname;
