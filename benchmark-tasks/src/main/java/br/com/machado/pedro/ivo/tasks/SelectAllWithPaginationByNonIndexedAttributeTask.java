@@ -35,23 +35,26 @@ public class SelectAllWithPaginationByNonIndexedAttributeTask implements Command
 		public void execute() {
 				int offset = 0;
 				Long fullTime = 0L;
-				SimpleDAO dao = DAOFactory.createSimpleDAO();
+				SimpleDAO dao = DAOFactory.getInstance();
 
-				while (offset <= total) {
-						Long totalTime = dao.selectByNonIndexedCountry(country, offset, pagesize);
-						fullTime = fullTime + totalTime;
+				if (dao.isNonIndexQueriesSupported()) {
+						while (offset <= total) {
+								Long totalTime = dao.selectByNonIndexedCountry(country, offset, pagesize);
+								fullTime = fullTime + totalTime;
 
-						metadata.put("offset", offset);
+								metadata.put("offset", offset);
 
-						IndexStoreFactory.getIndexStore().store(totalTime, operation, dao.getEngine(), TASK_ID, metadata);
-						offset = offset + pagesize;
+								IndexStoreFactory.getIndexStore().store(totalTime, operation, dao.getEngine(), TASK_ID, metadata);
+								offset = offset + pagesize;
+						}
+
+						metadata.remove("offset");
+						metadata.put("entries", total);
+						metadata.put("total", true);
+
+						IndexStoreFactory.getIndexStore().store(fullTime, operation, dao.getEngine(), TASK_TOTAL_ID, metadata);
 				}
-
-				metadata.remove("offset");
-				metadata.put("entries", total);
-				metadata.put("total", true);
-
-				IndexStoreFactory.getIndexStore().store(fullTime, operation, dao.getEngine(), TASK_TOTAL_ID, metadata);
+				DAOFactory.requeue(dao);
 		}
 
 		@Override

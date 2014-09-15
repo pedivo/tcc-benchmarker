@@ -1,28 +1,36 @@
 package br.com.machado.pedro.ivo.tasks;
 
+import br.com.machado.pedro.ivo.beans.enums.OperationType;
 import br.com.machado.pedro.ivo.dao.factory.DAOFactory;
 import br.com.machado.pedro.ivo.dao.generic.SimpleDAO;
 import br.com.machado.pedro.ivo.entity.beans.generic.Country;
+import br.com.machado.pedro.ivo.index.store.factory.IndexStoreFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This task has the responsability to count how many entries there're for each country
- * and then starts other task just to Select those entries using limit and offset
+ * That task will just do a simple count query by a indexed field
  *
  * @author Pedro
  */
-public class SelectAllWithoutPaginationByIndexedAttributeHandlerTask implements Command {
+public class CountByIndexedAttributeHandlerTask implements Command {
 
-		private static final Logger LOGGER = LoggerFactory.getLogger(SelectAllWithoutPaginationByIndexedAttributeHandlerTask.class);
+		private static final Logger LOGGER = LoggerFactory.getLogger(CountByIndexedAttributeHandlerTask.class);
+
+		private static final String        TASK_ID   = "COUNT_BY_INDEXED_ATTIRBUTE";
+		private static final OperationType operation = OperationType.SELECT;
+
+		// ThreadPoolInstance
 		private static ThreadPoolExecutor threadPool;
 
-		public SelectAllWithoutPaginationByIndexedAttributeHandlerTask() {
-				threadPool = new ThreadPoolExecutor(20, 20, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+		public CountByIndexedAttributeHandlerTask() {
+				threadPool = new ThreadPoolExecutor(100, 100, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
 		}
 
 		@Override
@@ -30,13 +38,11 @@ public class SelectAllWithoutPaginationByIndexedAttributeHandlerTask implements 
 				/**
 				 * Will query by any country
 				 */
-				int total = 0;
 				for (Country country : Country.values()) {
-						threadPool.submit(new SelectAllWithoutPaginationByIndexedAttributeTask(country));
-						total++;
+						threadPool.submit(new CountByIndexedAttributeTask(country));
 				}
 
-				while (threadPool.getCompletedTaskCount() < total) {
+				while (threadPool.getCompletedTaskCount() < Country.values().length) {
 						try {
 								Thread.sleep(2000);
 						}

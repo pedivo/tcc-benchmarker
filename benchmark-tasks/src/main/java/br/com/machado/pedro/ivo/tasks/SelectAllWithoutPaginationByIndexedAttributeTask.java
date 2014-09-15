@@ -29,13 +29,18 @@ public class SelectAllWithoutPaginationByIndexedAttributeTask implements Command
 				/**
 				 * Will query by any country
 				 */
-				SimpleDAO dao = DAOFactory.createSimpleDAO();
-				Long totalTime = dao.selectByIndexedCountry(country);
+				SimpleDAO dao = DAOFactory.getInstance();
 
-				Map<String, Object> metadata = new HashMap<>();
-				metadata.put("country", this.country.toString());
+				if (dao.isIndexQueriesSupported()) {
+						Long totalTime = dao.selectByIndexedCountry(country);
 
-				IndexStoreFactory.getIndexStore().store(totalTime, operation, dao.getEngine(), TASK_ID, metadata);
+						Map<String, Object> metadata = new HashMap<>();
+						metadata.put("country", this.country.toString());
+
+						IndexStoreFactory.getIndexStore().store(totalTime, operation, dao.getEngine(), TASK_ID, metadata);
+				}
+
+				DAOFactory.requeue(dao);
 		}
 
 		@Override

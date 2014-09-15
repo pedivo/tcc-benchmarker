@@ -3,7 +3,11 @@ package br.com.machado.pedro.ivo.tasks;
 import br.com.machado.pedro.ivo.dao.factory.DAOFactory;
 import br.com.machado.pedro.ivo.dao.generic.SimpleDAO;
 import br.com.machado.pedro.ivo.entity.beans.generic.Country;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -15,10 +19,14 @@ import java.util.concurrent.TimeUnit;
  * @author Pedro
  */
 public class SelectAllWithPaginationByIndexedAttributeHandlerTask implements Command {
+
+		private static final Logger LOGGER = LoggerFactory.getLogger(SelectAllWithPaginationByIndexedAttributeHandlerTask.class);
 		private static ThreadPoolExecutor threadPool;
+		public static Set<Country> countries = new HashSet<>();
+		private static LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
 
 		public SelectAllWithPaginationByIndexedAttributeHandlerTask() {
-				threadPool = new ThreadPoolExecutor(20, 20, 1, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+				threadPool = new ThreadPoolExecutor(20, 20, 1, TimeUnit.MINUTES, queue);
 		}
 
 		@Override
@@ -27,13 +35,15 @@ public class SelectAllWithPaginationByIndexedAttributeHandlerTask implements Com
 				 * Will query by any country
 				 */
 				int total = 0;
-				SimpleDAO dao = DAOFactory.createSimpleDAO();
+				SimpleDAO dao = DAOFactory.getInstance();
+
 				for (Country country : Country.values()) {
 						Long totalTime = dao.countByIndexedCountry(country);
-						dao.getResult();
-
+						countries.add(country);
 						threadPool.submit(new SelectAllWithPaginationByIndexedAttributeTask((Long) dao.getResult(), country));
 						total++;
+
+						DAOFactory.requeue(dao);
 				}
 
 				while (threadPool.getCompletedTaskCount() < total) {
@@ -41,8 +51,7 @@ public class SelectAllWithPaginationByIndexedAttributeHandlerTask implements Com
 								Thread.sleep(2000);
 						}
 						catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								LOGGER.error("Method[execute] Unknown Error m[{}] stack[{}]", e.getMessage(), e.getStackTrace());
 						}
 				}
 		}

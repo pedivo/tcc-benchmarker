@@ -2,6 +2,7 @@ package br.com.machado.pedro.ivo.tasks;
 
 import br.com.machado.pedro.ivo.beans.enums.OperationType;
 import br.com.machado.pedro.ivo.dao.factory.DAOFactory;
+import br.com.machado.pedro.ivo.dao.generic.SimpleDAO;
 import br.com.machado.pedro.ivo.entity.generic.SimpleEntity;
 import br.com.machado.pedro.ivo.index.store.factory.IndexStoreFactory;
 
@@ -27,8 +28,12 @@ public class SimpleEntityDeleteTask implements Command {
 				 * Will update a SimpleEntity
 				 *
 				 */
-				Long totalTime = DAOFactory.createSimpleDAO().deleteById(this.id);
-				IndexStoreFactory.getIndexStore().store(totalTime, operation, DAOFactory.createSimpleDAO().getEngine(), TASK_ID, null);
+				SimpleDAO dao = DAOFactory.getInstance();
+
+				Long totalTime = dao.deleteById(this.id);
+				IndexStoreFactory.getIndexStore().store(totalTime, operation, dao.getEngine(), TASK_ID, null);
+
+				DAOFactory.requeue(dao);
 		}
 
 		public boolean isEntityOk() {

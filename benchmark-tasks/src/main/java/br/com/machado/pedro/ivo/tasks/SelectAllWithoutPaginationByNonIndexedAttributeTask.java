@@ -29,13 +29,16 @@ public class SelectAllWithoutPaginationByNonIndexedAttributeTask implements Comm
 				/**
 				 * Will query by any country
 				 */
-				SimpleDAO dao = DAOFactory.createSimpleDAO();
-				Long totalTime = dao.selectByNonIndexedCountry(country);
+				SimpleDAO dao = DAOFactory.getInstance();
+				if (dao.isNonIndexQueriesSupported()) {
+						Long totalTime = dao.selectByNonIndexedCountry(country);
 
-				Map<String, Object> metadata = new HashMap<>();
-				metadata.put("country", this.country.toString());
+						Map<String, Object> metadata = new HashMap<>();
+						metadata.put("country", this.country.toString());
 
-				IndexStoreFactory.getIndexStore().store(totalTime, operation, dao.getEngine(), TASK_ID, metadata);
+						IndexStoreFactory.getIndexStore().store(totalTime, operation, dao.getEngine(), TASK_ID, metadata);
+				}
+				DAOFactory.requeue(dao);
 		}
 
 		@Override

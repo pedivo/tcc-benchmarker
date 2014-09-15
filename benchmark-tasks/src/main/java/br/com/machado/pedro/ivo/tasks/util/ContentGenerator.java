@@ -28,7 +28,7 @@ public class ContentGenerator {
 		 */
 		public static String createString(int length) {
 				StringBuffer buffer = new StringBuffer();
-				String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%�&*()-_=+?:}^`{][�~/;�|";
+				String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@";
 
 				int charactersLength = characters.length();
 
@@ -46,7 +46,7 @@ public class ContentGenerator {
 		 */
 		public static Country createCountry(Long index) {
 				if (index >= countries.length) {
-						Long nIndex = index / countries.length;
+						Long nIndex = index % countries.length;
 						return createCountry(nIndex);
 				}
 				return countries[index.intValue()];

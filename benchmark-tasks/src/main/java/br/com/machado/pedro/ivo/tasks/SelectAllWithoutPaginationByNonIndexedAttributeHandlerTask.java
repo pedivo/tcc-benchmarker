@@ -1,6 +1,8 @@
 package br.com.machado.pedro.ivo.tasks;
 
 import br.com.machado.pedro.ivo.entity.beans.generic.Country;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -11,6 +13,8 @@ import java.util.concurrent.TimeUnit;
  * @author Pedro
  */
 public class SelectAllWithoutPaginationByNonIndexedAttributeHandlerTask implements Command {
+
+		private static final Logger LOGGER = LoggerFactory.getLogger(SelectAllWithoutPaginationByNonIndexedAttributeHandlerTask.class);
 		private static ThreadPoolExecutor threadPool;
 
 		public SelectAllWithoutPaginationByNonIndexedAttributeHandlerTask() {
@@ -33,8 +37,7 @@ public class SelectAllWithoutPaginationByNonIndexedAttributeHandlerTask implemen
 								Thread.sleep(2000);
 						}
 						catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								LOGGER.error("Method[execute] Unknown Error m[{}] stack[{}]", e.getMessage(), e.getStackTrace());
 						}
 				}
 		}

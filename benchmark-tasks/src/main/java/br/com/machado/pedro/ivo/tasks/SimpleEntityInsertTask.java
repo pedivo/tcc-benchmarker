@@ -2,10 +2,13 @@ package br.com.machado.pedro.ivo.tasks;
 
 import br.com.machado.pedro.ivo.beans.enums.OperationType;
 import br.com.machado.pedro.ivo.dao.factory.DAOFactory;
+import br.com.machado.pedro.ivo.dao.generic.SimpleDAO;
 import br.com.machado.pedro.ivo.entity.factory.EntityFactory;
 import br.com.machado.pedro.ivo.entity.generic.SimpleEntity;
 import br.com.machado.pedro.ivo.index.store.factory.IndexStoreFactory;
 import br.com.machado.pedro.ivo.tasks.util.ContentGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This task insert a new SimpleEntity
@@ -13,6 +16,8 @@ import br.com.machado.pedro.ivo.tasks.util.ContentGenerator;
  * @author Pedro
  */
 public class SimpleEntityInsertTask implements Command {
+
+		private static final Logger LOGGER = LoggerFactory.getLogger(SimpleEntityInsertTask.class);
 
 		private SimpleEntity entity;
 		private static       long          COUNTER   = 0;
@@ -38,8 +43,16 @@ public class SimpleEntityInsertTask implements Command {
 				 * Will create 1 SimpleEntities
 				 *
 				 */
-				Long totalTime = DAOFactory.createSimpleDAO().save(entity);
-				IndexStoreFactory.getIndexStore().store(totalTime, operation, DAOFactory.createSimpleDAO().getEngine(), TASK_ID, null);
+				SimpleDAO dao = DAOFactory.getInstance();
+				try {
+						Long totalTime = dao.save(entity);
+						IndexStoreFactory.getIndexStore().store(totalTime, operation, dao.getEngine(), TASK_ID, null);
+				} catch (Exception e) {
+						LOGGER.error("Method[execute] Unknown Error m[{}] stack[{}]", e.getMessage(), e.getStackTrace());
+						IndexStoreFactory.getIndexStore().store(0, OperationType.ERROR, dao.getEngine(), TASK_ID, null);
+				} finally {
+						DAOFactory.requeue(dao);
+				}
 		}
 
 		public boolean isEntityOk() {
